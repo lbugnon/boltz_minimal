@@ -1,6 +1,5 @@
 # started from code from https://github.com/lucidrains/alphafold3-pytorch, MIT License, Copyright (c) 2024 Phil Wang
 
-from fairscale.nn.checkpoint.checkpoint_activations import checkpoint_wrapper
 from torch import nn, sigmoid
 from torch.nn import (
     LayerNorm,
@@ -97,7 +96,7 @@ class DiffusionTransformer(Module):
         dim=384,
         dim_single_cond=None,
         dim_pairwise=128,
-        activation_checkpointing=False,
+        activation_checkpointing=False, # disabled
         offload_to_cpu=False,
     ):
         """Initialize the diffusion transformer.
@@ -127,17 +126,7 @@ class DiffusionTransformer(Module):
         self.layers = ModuleList()
         for _ in range(depth):
             if activation_checkpointing:
-                self.layers.append(
-                    checkpoint_wrapper(
-                        DiffusionTransformerLayer(
-                            heads,
-                            dim,
-                            dim_single_cond,
-                            dim_pairwise,
-                        ),
-                        offload_to_cpu=offload_to_cpu,
-                    )
-                )
+                raise NotImplementedError("Activation checkpointing is not implemented yet.")
             else:
                 self.layers.append(
                     DiffusionTransformerLayer(

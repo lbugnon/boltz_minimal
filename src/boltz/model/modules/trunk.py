@@ -1,7 +1,6 @@
 from typing import Optional
 
 import torch
-from fairscale.nn.checkpoint.checkpoint_activations import checkpoint_wrapper
 from torch import Tensor, nn
 
 from boltz.data import const
@@ -126,7 +125,7 @@ class MSAModule(nn.Module):
         z_dropout: float,
         pairwise_head_width: int = 32,
         pairwise_num_heads: int = 4,
-        activation_checkpointing: bool = False,
+        activation_checkpointing: bool = False, # disabled
         use_paired_feature: bool = False,
         offload_to_cpu: bool = False,
         subsample_msa: bool = False,
@@ -178,19 +177,7 @@ class MSAModule(nn.Module):
         self.layers = nn.ModuleList()
         for i in range(msa_blocks):
             if activation_checkpointing:
-                self.layers.append(
-                    checkpoint_wrapper(
-                        MSALayer(
-                            msa_s,
-                            token_z,
-                            msa_dropout,
-                            z_dropout,
-                            pairwise_head_width,
-                            pairwise_num_heads,
-                        ),
-                        offload_to_cpu=offload_to_cpu,
-                    )
-                )
+                raise NotImplementedError("Activation checkpointing is not implemented yet.")
             else:
                 self.layers.append(
                     MSALayer(
