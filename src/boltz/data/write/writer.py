@@ -10,7 +10,6 @@ from pytorch_lightning.callbacks import BasePredictionWriter
 from torch import Tensor
 
 from boltz.data.types import Coords, Interface, Record, Structure, StructureV2
-from boltz.data.write.mmcif import to_mmcif
 from boltz.data.write.pdb import to_pdb
 
 
@@ -166,11 +165,7 @@ class BoltzWriter(BasePredictionWriter):
                             to_pdb(new_structure, plddts=plddts, boltz2=self.boltz2)
                         )
                 elif self.output_format == "mmcif":
-                    path = struct_dir / f"{outname}.cif"
-                    with path.open("w") as f:
-                        f.write(
-                            to_mmcif(new_structure, plddts=plddts, boltz2=self.boltz2)
-                        )
+                    raise NotImplementedError("mmCIF output not implemented yet.")
                 else:
                     path = struct_dir / f"{outname}.npz"
                     np.savez_compressed(path, **asdict(new_structure))
